@@ -2,14 +2,14 @@
 
 ##todo list
 - список чекпоинтов через запятую в checkpoints, массив перенести в checkpointsTodo
-- метод /getRaceList(dt,city,name)
-- метод /getRaceInfo(raceUID)
-- метод /getClassList(raceUID)
-- метод /getClassInfo(raceUID,classUID)
-- метод /getCheckpointList(raceUID)
-- метод /getCheckpointInfo(raceUID,classUID,number)
-- метод /getMarshalList(raceUID)
-- метод /getMarshalInfo(raceUID,m_number)
+- метод /api/getRaceList(dt,city,name)
+- метод /api/getRaceInfo(raceUID)
+- метод /api/getClassList(raceUID)
+- метод /api/getClassInfo(raceUID,classUID)
+- метод /api/getCheckpointList(raceUID)
+- метод /api/getCheckpointInfo(raceUID,classUID,number)
+- метод /api/getMarshalList(raceUID)
+- метод /api/getMarshalInfo(raceUID,m_number)
 - доработка запросов на получение списка гонок с учетом параметров name и city
 - доработка реляционной модели с учетом замечаний по чекпоинтам, схема после доработок
 - создание моделей и перенос кода работы с БД из контроллера в модель
