@@ -1,0 +1,30 @@
+{{set . "title" "Home"}}
+{{template "header.html" .}}
+
+<p style="padding: 20px"><button onclick="getRaces()">POST /getRaces</button></p>
+
+<script>
+    function getRaces() {
+        $.ajax({
+            type: 'POST',
+            host: '/',
+            port: '9000',
+            url: 'getRaces',
+            data: {
+                "dt": "2016-05-21",
+                "city": "саратов",
+                "name": "роло"
+            },
+            success: function (data, textStatus, jqXHR) {                
+                var obj = JSON.parse(data)
+                console.dir(obj);
+                $('body').append(data)            
+            },
+            error: function (jqXHR, textStatus, errorThown) {
+                console.error(jqXHR);
+            }
+        });
+    }
+</script>
+
+{{template "footer.html" .}}
