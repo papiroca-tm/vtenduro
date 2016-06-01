@@ -3,9 +3,10 @@ package controllers
 import (
 	"database/sql"
 	"encoding/json"
-	//"fmt"
 	_ "github.com/lib/pq"
 	"github.com/revel/revel"
+	"strconv"
+	"strings"
 	//"time"
 )
 
@@ -29,12 +30,13 @@ type Checkpoint struct {
 }
 
 type RaceClass struct {
-	UID            string `json:"class_UID"`
-	Name           string `json:"name"`
-	Laps           int    `json:"laps"`
-	DateTimeStart  string `json:"date_start"`
-	DateTimeFinish string `json:"date_finish"`
-	CheckpointsArr []Checkpoint
+	UID                 string `json:"class_UID"`
+	Name                string `json:"name"`
+	Laps                int    `json:"laps"`
+	DateTimeStart       string `json:"date_start"`
+	DateTimeFinish      string `json:"date_finish"`
+	CheckpointsArr_todo []Checkpoint
+	Checkpoints         string
 }
 
 type Race struct {
@@ -89,12 +91,10 @@ func (c App) GetRaces(dt, city, name string) revel.Result {
 		}
 	}
 	data = row.String
-	//revel.WARN.Println("data", data, "\n")
 	json.Unmarshal([]byte(data), &racesStruct.RacesArr)
 
 	for i, value := range racesStruct.RacesArr {
 		raceUID := value.UID
-		revel.WARN.Println("raceUID", raceUID)
 
 		query := `SELECT m_number, "race_UID", name, phone, gps, "marshal_ID"
   					FROM "Marshals"
@@ -115,7 +115,6 @@ func (c App) GetRaces(dt, city, name string) revel.Result {
 			}
 		}
 		data = row.String
-		//revel.WARN.Println("data", data, "\n")
 		json.Unmarshal([]byte(data), &racesStruct.RacesArr[i].MarshalsArr)
 
 		// classes
@@ -136,16 +135,15 @@ func (c App) GetRaces(dt, city, name string) revel.Result {
 			}
 		}
 		data = row.String
-		//revel.WARN.Println("data", data, "\n")
 		json.Unmarshal([]byte(data), &racesStruct.RacesArr[i].ClassesArr)
 
 		for n, value := range racesStruct.RacesArr[i].ClassesArr {
 			classUID := value.UID
-			revel.WARN.Println("classUID", classUID, n)
 
 			query = `SELECT "checkpoint_ID", "race_UID", "class_UID", "number", gps, m_number
 						FROM "Checkpoints"
-						WHERE ("race_UID" = '` + raceUID + `' AND "class_UID" = '` + classUID + `')`
+						WHERE ("race_UID" = '` + raceUID + `' AND "class_UID" = '` + classUID + `')
+						ORDER BY m_number`
 			rows, err = db.Query("SELECT array_to_json(ARRAY_AGG(row_to_json(row))) FROM (" + query + ") row")
 			defer rows.Close()
 			if err != nil {
@@ -160,15 +158,23 @@ func (c App) GetRaces(dt, city, name string) revel.Result {
 				}
 			}
 			data = row.String
-			//revel.WARN.Println("data", data, "\n")
-			json.Unmarshal([]byte(data), &racesStruct.RacesArr[i].ClassesArr[n].CheckpointsArr)
-
+			json.Unmarshal([]byte(data), &racesStruct.RacesArr[i].ClassesArr[n].CheckpointsArr_todo)
+			for _, value := range racesStruct.RacesArr[i].ClassesArr[n].CheckpointsArr_todo {
+				chekpointNum := value.Number
+				revel.WARN.Println("chekpointNum", chekpointNum)
+				racesStruct.RacesArr[i].ClassesArr[n].Checkpoints = racesStruct.RacesArr[i].ClassesArr[n].Checkpoints + strconv.Itoa(chekpointNum) + ","
+			}
+			str := racesStruct.RacesArr[i].ClassesArr[n].Checkpoints
+			if len(str) > 0 {
+				if strings.HasSuffix(str, ",") {
+					str = str[:len(str)-len(",")]
+					racesStruct.RacesArr[i].ClassesArr[n].Checkpoints = str
+				}
+			}
 		}
-
 	}
 
 	res, _ := json.Marshal(racesStruct)
-	//revel.WARN.Println("res", string(res[:]), "\n")
 	return c.RenderJson(string(res[:]))
 }
 
