@@ -4,6 +4,7 @@
 - убрать ненужные поля с массивами из гонки при getRaceList -- (01.06.2016)
 - исправление ошибки с пустым городом в getRaceInfo -- (01.06.2016)
 - убрать массив гонок при getRaceInfo -- (01.06.2016)
+- независимый от консоли запуск(screen) -- (01.06.2016)
 - метод /api/getClassList(raceUID) -- 31.05.16
 - метод /api/getClassInfo(raceUID,classUID) -- 31.05.16
 - метод /api/getCheckpointList(raceUID) -- 31.05.16
