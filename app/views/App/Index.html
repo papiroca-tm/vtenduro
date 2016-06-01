@@ -1,30 +1,46 @@
 {{set . "title" "Home"}}
 {{template "header.html" .}}
 
-<p style="padding: 20px"><button onclick="getRaces()">POST /getRaces</button></p>
+<p style="padding: 20px">
+    <button onclick="getRaces()">POST /api/getRaceList</button>
+    data:{"dt":"2016-05-21","city":"саратов","name":"роло"}
+</p>
+<p style="padding: 20px">
+    <button onclick="getRaceInfo('edec71a9-f2cb-44c9-b142-d2d3747307b1')">POST /api/getRaceInfo</button>
+    data:{"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1"}
+</p>
 
 <script>
     function getRaces() {
+        sendPost("/api/getRaceList", {
+            "dt": "2016-05-21",
+            "city": "саратов",
+            "name": "роло"
+        });
+    }
+    function getRaceInfo(raceUID) {
+        sendPost("/api/getRaceInfo", {
+            "raceUID": raceUID,
+        });
+    }
+    
+    function sendPost(url, data) {
         $.ajax({
             type: 'POST',
             host: '/',
             port: '9000',
-            url: 'getRaces',
-            data: {
-                "dt": "2016-05-21",
-                "city": "саратов",
-                "name": "роло"
-            },
+            url: url,
+            data: data,
             success: function (data, textStatus, jqXHR) {                
                 var obj = JSON.parse(data)
-                console.dir(obj);
-                $('body').append(data)            
+                console.log("getRaceInfo");
+                console.dir(obj);            
             },
             error: function (jqXHR, textStatus, errorThown) {
                 console.error(jqXHR);
             }
         });
-    }
+    }    
 </script>
 
 {{template "footer.html" .}}

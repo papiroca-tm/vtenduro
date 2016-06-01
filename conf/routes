@@ -15,4 +15,5 @@ GET     /public/*filepath                       Static.Serve("public")
 # Catch all
 *       /:controller/:action                    :controller.:action
 
-POST /getRaces									App.GetRaces
+POST /api/getRaceList									Api.GetRaceList
+POST /api/getRaceInfo									Api.GetRaceInfo
