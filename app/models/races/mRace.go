@@ -77,7 +77,7 @@ func (m *MRace) GetRaceList(dt, city, name string) (res string) {
 		revel.ERROR.Println(err)
 	}
 	revel.INFO.Println("openDB OK")
-	query := `SELECT "Race"."race_UID", "Race".date, "Race".name, "Race".start_type, "Race".gps, "RefCitys".name As city
+	query := `SELECT "Race"."race_UID", "Race".date, "Race".name, "Race".start_type, "Race".gps,  "Race".city As cityid, "RefCitys"."city_ID", "RefCitys".name AS city
 					FROM "Race","RefCitys"
 					WHERE ("Race".date = '` + dt + `' AND "Race".city = "RefCitys"."city_ID")`
 	rows, err := m.DB.Query("SELECT array_to_json(ARRAY_AGG(row_to_json(row))) FROM (" + query + ") row")
@@ -101,7 +101,6 @@ func (m *MRace) GetRaceList(dt, city, name string) (res string) {
 	resByte, _ := json.Marshal(m.RacesSimple)
 	res = string(resByte[:])
 	return res
-	return
 }
 
 func (m *MRace) GetRaceInfo(raceUID string) (res string) {
@@ -111,9 +110,10 @@ func (m *MRace) GetRaceInfo(raceUID string) (res string) {
 		revel.ERROR.Println(err)
 	}
 	revel.INFO.Println("openDB OK")
-	query := `SELECT "Race"."race_UID", "Race".date, "Race".name, "Race".start_type, "Race".gps, "Race".city
-				FROM "Race"
-				WHERE ("Race"."race_UID" = '` + raceUID + `')`
+	query := `SELECT "Race"."race_UID", "Race".date, "Race".name, "Race".start_type, "Race".gps, "Race".city As cityid, "RefCitys"."city_ID", "RefCitys".name AS city
+				FROM "Race", "RefCitys"
+				WHERE ("Race"."race_UID" = '` + raceUID + `' AND "Race".city = "RefCitys"."city_ID")`
+
 	rows, err := m.DB.Query("SELECT row_to_json(row) FROM (" + query + ") row")
 	defer rows.Close()
 	if err != nil {
