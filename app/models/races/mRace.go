@@ -11,8 +11,9 @@ import (
 )
 
 type MRace struct {
-	Races Races
-	DB    *sql.DB
+	Races       Races
+	RacesSimple RacesSimple
+	DB          *sql.DB
 }
 
 //var db *sql.DB
@@ -51,6 +52,19 @@ type Race struct {
 	MarshalsArr []Marshal
 }
 
+type RaceSimple struct {
+	UID       string `json:"race_UID"`
+	Date      string `json:"date"`
+	Name      string `json:"name"`
+	StartType int    `json:"start_type"`
+	Gps       string `json:"gps"`
+	City      string `json:"city"`
+}
+
+type RacesSimple struct {
+	RacesArr []RaceSimple
+}
+
 type Races struct {
 	RacesArr []Race
 }
@@ -81,9 +95,9 @@ func (m *MRace) GetRaceList(dt, city, name string) (res string) {
 		}
 	}
 	data = row.String
-	json.Unmarshal([]byte(data), &m.Races.RacesArr)
+	json.Unmarshal([]byte(data), &m.RacesSimple.RacesArr)
 
-	resByte, _ := json.Marshal(m.Races)
+	resByte, _ := json.Marshal(m.RacesSimple)
 	res = string(resByte[:])
 	return res
 }
