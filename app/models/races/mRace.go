@@ -3,73 +3,30 @@ package races
 import (
 	"database/sql"
 	"encoding/json"
-	_ "github.com/lib/pq"
+	_ "github.com/lib/pq" //
 	"github.com/revel/revel"
 	"strconv"
 	"strings"
 	//"time"
 )
 
+/*
+MRace -
+*/
 type MRace struct {
 	Races       Races
+	RaceSimple  RaceSimple
 	RacesSimple RacesSimple
 	Race        Race
 	DB          *sql.DB
 }
 
-//var db *sql.DB
-
-type Marshal struct {
-	Number int    `json:"m_number"`
-	Name   string `json:"name"`
-	Phone  string `json:"phone"`
-	Gps    string `json:"gps"`
-}
-
-type Checkpoint struct {
-	ID     int `json:"checkpoint_ID"`
-	Number int `json:"number"`
-	Gps    int `json:"gps"`
-}
-
-type RaceClass struct {
-	UID                 string `json:"class_UID"`
-	Name                string `json:"name"`
-	Laps                int    `json:"laps"`
-	DateTimeStart       string `json:"date_start"`
-	DateTimeFinish      string `json:"date_finish"`
-	CheckpointsArr_todo []Checkpoint
-	Checkpoints         string
-}
-
-type Race struct {
-	UID         string `json:"race_UID"`
-	Date        string `json:"date"`
-	Name        string `json:"name"`
-	StartType   int    `json:"start_type"`
-	Gps         string `json:"gps"`
-	City        string `json:"city"`
-	ClassesArr  []RaceClass
-	MarshalsArr []Marshal
-}
-
-type Races struct {
-	RacesArr []Race
-}
-
-type RaceSimple struct {
-	UID       string `json:"race_UID"`
-	Date      string `json:"date"`
-	Name      string `json:"name"`
-	StartType int    `json:"start_type"`
-	Gps       string `json:"gps"`
-	City      string `json:"city"`
-}
-
-type RacesSimple struct {
-	RacesArr []RaceSimple
-}
-
+/*
+GetRaceList - методот возвращает массив гонок с базовыми характеристиками
+	dt - дата в формате 2006-01-02
+	city - имя города, ищет по принципу LIKE %city% (опционально)
+	name - имя гонки, ищет по принципу LIKE %name% (опционально)
+*/
 func (m *MRace) GetRaceList(dt, city, name string) (res string) {
 	err := m.openDB()
 	defer m.closeDB()
@@ -92,11 +49,11 @@ func (m *MRace) GetRaceList(dt, city, name string) (res string) {
 	revel.WARN.Println("query ", query)
 
 	rows, err := m.DB.Query("SELECT array_to_json(ARRAY_AGG(row_to_json(row))) FROM (" + query + ") row")
+
 	defer rows.Close()
 	if err != nil {
 		revel.ERROR.Println(err)
 	}
-
 	var data string
 	var row sql.NullString
 	for rows.Next() {
@@ -108,12 +65,15 @@ func (m *MRace) GetRaceList(dt, city, name string) (res string) {
 	}
 	data = row.String
 	json.Unmarshal([]byte(data), &m.RacesSimple.RacesArr)
-
 	resByte, _ := json.Marshal(m.RacesSimple)
 	res = string(resByte[:])
 	return res
 }
 
+/*
+GetRaceInfo - метод возвращает полные данные по гонке
+	raceUID - уникальный индификатор гонки
+*/
 func (m *MRace) GetRaceInfo(raceUID string) (res string) {
 	err := m.openDB()
 	defer m.closeDB()
@@ -229,6 +189,9 @@ func (m *MRace) GetRaceInfo(raceUID string) (res string) {
 	return res
 }
 
+/*
+openDB - методт подключения к БД
+*/
 func (m *MRace) openDB() (err error) {
 	driver := "postgres"
 	connectString := "postgres" + "://"
@@ -246,7 +209,9 @@ func (m *MRace) openDB() (err error) {
 	return nil
 }
 
-// closeDB ...
+/*
+closeDB - методт отключения от БД
+*/
 func (m *MRace) closeDB() (err error) {
 	err = m.DB.Close()
 	if err != nil {

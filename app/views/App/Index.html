@@ -33,7 +33,14 @@
             data: data,
             success: function (data, textStatus, jqXHR) {                
                 var obj = JSON.parse(data)
-                console.log("getRaceInfo");
+                switch (url) {
+                    case "/api/getRaceList":
+                        console.log("getRaceList");
+                        break;
+                    case "/api/getRaceInfo":
+                        console.log("getRaceInfo");
+                        break;
+                }                
                 console.dir(obj);            
             },
             error: function (jqXHR, textStatus, errorThown) {
