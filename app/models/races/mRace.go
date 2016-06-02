@@ -79,7 +79,18 @@ func (m *MRace) GetRaceList(dt, city, name string) (res string) {
 	revel.INFO.Println("openDB OK")
 	query := `SELECT "Race"."race_UID", "Race".date, "Race".name, "Race".start_type, "Race".gps,  "Race".city As cityid, "RefCitys"."city_ID", "RefCitys".name AS city
 					FROM "Race","RefCitys"
-					WHERE ("Race".date = '` + dt + `' AND "Race".city = "RefCitys"."city_ID")`
+					WHERE (
+						"Race".date = '` + dt + `' 
+						AND "Race".city = "RefCitys"."city_ID" `
+	if city != "" {
+		query = query + ` AND lower("RefCitys".name) LIKE '%` + strings.ToLower(city) + `%'`
+	}
+	if name != "" {
+		query = query + ` AND lower("Race".name) LIKE '%` + strings.ToLower(name) + `%'`
+	}
+	query = query + `)`
+	revel.WARN.Println("query ", query)
+
 	rows, err := m.DB.Query("SELECT array_to_json(ARRAY_AGG(row_to_json(row))) FROM (" + query + ") row")
 	defer rows.Close()
 	if err != nil {
