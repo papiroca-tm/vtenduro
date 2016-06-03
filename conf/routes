@@ -18,3 +18,4 @@ GET     /public/*filepath                       Static.Serve("public")
 POST /api/getRaceList									Api.GetRaceList
 POST /api/getRaceInfo									Api.GetRaceInfo
 POST /api/getClassList									Api.GetClassList
+POST /api/getMarshalList								Api.GetMarshalList

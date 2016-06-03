@@ -13,6 +13,10 @@
     <button onclick="getClassList('edec71a9-f2cb-44c9-b142-d2d3747307b1')">POST /api/getClassList</button>
     data:{"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1"}
 </p>
+<p style="padding: 5px">
+    <button onclick="getMarshalList('edec71a9-f2cb-44c9-b142-d2d3747307b1')">POST /api/getMarshalList</button>
+    data:{"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1"}
+</p>
 
 <script>
     function getRaceList() {
@@ -32,6 +36,14 @@
             "raceUID": raceUID,
         });
     };
+    function getMarshalList(raceUID) {
+        sendPost("/api/getMarshalList", {
+            "raceUID": raceUID,
+        });
+    };
+    
+    
+    
     
     function sendPost(url, data) {
         $.ajax({
