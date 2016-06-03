@@ -1,22 +1,26 @@
 {{set . "title" "Home"}}
 {{template "header.html" .}}
 
-<p style="padding: 5px">
+<div style="padding: 1px">
     <button onclick="getRaceList()">POST /api/getRaceList</button>
     data:{"dt":"2016-05-21","city":"саратов","name":"роло"}
-</p>
-<p style="padding: 5px">
+</div>
+<div style="padding: 1px">
     <button onclick="getRaceInfo('edec71a9-f2cb-44c9-b142-d2d3747307b1')">POST /api/getRaceInfo</button>
     data:{"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1"}
-</p>
-<p style="padding: 5px">
+</div>
+<div style="padding: 1px">
     <button onclick="getClassList('edec71a9-f2cb-44c9-b142-d2d3747307b1')">POST /api/getClassList</button>
     data:{"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1"}
-</p>
-<p style="padding: 5px">
+</div>
+<div style="padding: 1px">
     <button onclick="getMarshalList('edec71a9-f2cb-44c9-b142-d2d3747307b1')">POST /api/getMarshalList</button>
     data:{"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1"}
-</p>
+</div>
+<div style="padding: 1px">
+    <button onclick="getMarshalInfo('edec71a9-f2cb-44c9-b142-d2d3747307b1', 2)">POST /api/getMarshalInfo</button>
+    data:{"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1, "mNumber":2"}
+</div>
 
 <script>
     function getRaceList() {
@@ -41,6 +45,12 @@
             "raceUID": raceUID,
         });
     };
+    function getMarshalInfo(raceUID, mNumber) {
+        sendPost("/api/getMarshalInfo", {
+            "raceUID": raceUID,
+            "mNumber": mNumber,
+        });
+    };
     
     
     
@@ -60,6 +70,15 @@
                         break;
                     case "/api/getRaceInfo":
                         console.log("getRaceInfo");
+                        break;
+                    case "/api/getClassList":
+                        console.log("getClassList");
+                        break;
+                    case "/api/getMarshalList":
+                        console.log("getMarshalList");
+                        break;
+                    case "/api/getMarshalInfo":
+                        console.log("getMarshalInfo");
                         break;
                 }                
                 console.dir(obj);            

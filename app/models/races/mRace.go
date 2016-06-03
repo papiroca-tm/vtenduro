@@ -143,6 +143,41 @@ func (m *MRace) GetRaceMarshalsArr(raceUID string) (result []Marshal, err error)
 }
 
 /*
+GetRaceMarshalInfo - метод возвращает данные по маршалу гонки
+	raceUID - уникальный индификатор гонки
+	mNumber - номер маршала
+*/
+func (m *MRace) GetRaceMarshalInfo(raceUID string, mNumber int) (result Marshal, err error) {
+	err = m.openDB()
+	defer m.closeDB()
+	if err != nil {
+		revel.ERROR.Println(err)
+		return result, err
+	}
+	query := `SELECT m_number, "race_UID", name, phone, gps, "marshal_ID"
+				FROM "Marshals"
+				WHERE ("race_UID" = '` + raceUID + `' AND m_number ='` + strconv.Itoa(mNumber) + `')`
+	rows, err := m.DB.Query("SELECT row_to_json(row) FROM (" + query + ") row")
+	defer rows.Close()
+	if err != nil {
+		revel.ERROR.Println(err)
+		return result, err
+	}
+	var data string
+	var row sql.NullString
+	for rows.Next() {
+		err = rows.Scan(&row)
+		if err != nil {
+			revel.ERROR.Println(err)
+			return result, err
+		}
+	}
+	data = row.String
+	json.Unmarshal([]byte(data), &result)
+	return result, err
+}
+
+/*
 GetRaceClassesArr - метод возвращает массив классов гонки
 	raceUID - уникальный индификатор гонки
 */
@@ -280,6 +315,5 @@ func (m *MRace) closeDB() (err error) {
 		revel.ERROR.Println("DB close Error", err)
 		return err
 	}
-	revel.INFO.Println("closeDB OK")
 	return nil
 }
