@@ -3,6 +3,7 @@ package races
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
 	_ "github.com/lib/pq" //
 	"github.com/revel/revel"
 	"strconv"
@@ -27,13 +28,13 @@ GetRaceList - методот возвращает массив гонок с б�
 	city - имя города, ищет по принципу LIKE %city% (опционально)
 	name - имя гонки, ищет по принципу LIKE %name% (опционально)
 */
-func (m *MRace) GetRaceList(dt, city, name string) (res string) {
-	err := m.openDB()
+func (m *MRace) GetRaceList(dt, city, name string) (result RacesSimple, err error) {
+	err = m.openDB()
 	defer m.closeDB()
 	if err != nil {
 		revel.ERROR.Println(err)
+		return result, err
 	}
-	revel.INFO.Println("openDB OK")
 	query := `SELECT "Race"."race_UID", "Race".date, "Race".name, "Race".start_type, "Race".gps,  "Race".city As cityid, "RefCitys"."city_ID", "RefCitys".name AS city
 					FROM "Race","RefCitys"
 					WHERE (
@@ -46,13 +47,11 @@ func (m *MRace) GetRaceList(dt, city, name string) (res string) {
 		query = query + ` AND lower("Race".name) LIKE '%` + strings.ToLower(name) + `%'`
 	}
 	query = query + `)`
-	revel.WARN.Println("query ", query)
-
 	rows, err := m.DB.Query("SELECT array_to_json(ARRAY_AGG(row_to_json(row))) FROM (" + query + ") row")
-
 	defer rows.Close()
 	if err != nil {
 		revel.ERROR.Println(err)
+		return result, err
 	}
 	var data string
 	var row sql.NullString
@@ -60,26 +59,29 @@ func (m *MRace) GetRaceList(dt, city, name string) (res string) {
 		err = rows.Scan(&row)
 		if err != nil {
 			revel.ERROR.Println(err)
-			break
+			return result, err
 		}
 	}
 	data = row.String
 	json.Unmarshal([]byte(data), &m.RacesSimple.RacesArr)
-	resByte, _ := json.Marshal(m.RacesSimple)
-	res = string(resByte[:])
-	return res
+	result = m.RacesSimple
+	return result, nil
 }
 
 /*
-GetRaceInfo - метод возвращает полные данные по гонке
+GetRace - метод возвращает структуру гонки заполненную основными свойствами
 	raceUID - уникальный индификатор гонки
 */
-func (m *MRace) GetRaceInfo(raceUID string) (res string) {
-	err := m.openDB()
+func (m *MRace) GetRace(raceUID string) (result Race, err error) {
+	err = m.openDB()
 	defer m.closeDB()
 	if err != nil {
 		revel.ERROR.Println(err)
+		return result, err
 	}
+
+	raceStruct := m.Race
+
 	revel.INFO.Println("openDB OK")
 	query := `SELECT "Race"."race_UID", "Race".date, "Race".name, "Race".start_type, "Race".gps, "Race".city As cityid, "RefCitys"."city_ID", "RefCitys".name AS city
 				FROM "Race", "RefCitys"
@@ -89,6 +91,7 @@ func (m *MRace) GetRaceInfo(raceUID string) (res string) {
 	defer rows.Close()
 	if err != nil {
 		revel.ERROR.Println(err)
+		return result, err
 	}
 
 	var data string
@@ -97,96 +100,155 @@ func (m *MRace) GetRaceInfo(raceUID string) (res string) {
 		err = rows.Scan(&row)
 		if err != nil {
 			revel.ERROR.Println(err)
-			break
+			return result, err
 		}
 	}
 	data = row.String
-	revel.WARN.Println("data", data)
-	json.Unmarshal([]byte(data), &m.Race)
+	json.Unmarshal([]byte(data), &raceStruct)
+	return raceStruct, err
+}
 
-	data = ""
-	query = `SELECT m_number, "race_UID", name, phone, gps, "marshal_ID"
+/*
+GetRaceMarshals - метод возвращает массив маршалов гонки
+	raceUID - уникальный индификатор гонки
+*/
+func (m *MRace) GetRaceMarshals(raceUID string) (result []Marshal, err error) {
+	err = m.openDB()
+	defer m.closeDB()
+	if err != nil {
+		revel.ERROR.Println(err)
+		return result, err
+	}
+	query := `SELECT m_number, "race_UID", name, phone, gps, "marshal_ID"
 				FROM "Marshals"
 				WHERE ("race_UID" = '` + raceUID + `')`
-	rows, err = m.DB.Query("SELECT array_to_json(ARRAY_AGG(row_to_json(row))) FROM (" + query + ") row")
+	rows, err := m.DB.Query("SELECT array_to_json(ARRAY_AGG(row_to_json(row))) FROM (" + query + ") row")
 	defer rows.Close()
 	if err != nil {
 		revel.ERROR.Println(err)
+		return result, err
 	}
-
+	var data string
+	var row sql.NullString
 	for rows.Next() {
 		err = rows.Scan(&row)
 		if err != nil {
 			revel.ERROR.Println(err)
-			break
+			return result, err
 		}
 	}
 	data = row.String
-	revel.WARN.Println("data", data)
-	json.Unmarshal([]byte(data), &m.Race.MarshalsArr)
+	json.Unmarshal([]byte(data), &result)
+	return result, err
+}
 
-	// classes
-	data = ""
-	query = `SELECT "class_UID", "race_UID", name, laps, date_start, date_finish
+/*
+GetRaceClasses - метод возвращает массив классов гонки
+	raceUID - уникальный индификатор гонки
+*/
+func (m *MRace) GetRaceClasses(raceUID string) (result []RaceClass, err error) {
+	err = m.openDB()
+	defer m.closeDB()
+	if err != nil {
+		revel.ERROR.Println(err)
+		return result, err
+	}
+	query := `SELECT "class_UID", "race_UID", name, laps, date_start, date_finish
 				FROM "RaceClasses"
 				WHERE ("race_UID" = '` + raceUID + `')`
-	rows, err = m.DB.Query("SELECT array_to_json(ARRAY_AGG(row_to_json(row))) FROM (" + query + ") row")
+	rows, err := m.DB.Query("SELECT array_to_json(ARRAY_AGG(row_to_json(row))) FROM (" + query + ") row")
 	defer rows.Close()
 	if err != nil {
 		revel.ERROR.Println(err)
+		return result, err
 	}
-
+	var data string
+	var row sql.NullString
 	for rows.Next() {
 		err = rows.Scan(&row)
 		if err != nil {
 			revel.ERROR.Println(err)
-			break
+			return result, err
 		}
 	}
 	data = row.String
-	revel.WARN.Println("data", data)
-	json.Unmarshal([]byte(data), &m.Race.ClassesArr)
+	//revel.WARN.Println("data", data)
+	json.Unmarshal([]byte(data), &result)
+	return result, err
+}
 
-	for n, value := range m.Race.ClassesArr {
+/*
+GetRaceCheckpointsArr - метод заполняет массив классов гонки массивом чекпоинтов
+	и todo строкой чекпоинтов через запятую
+	raceUID - уникальный индификатор гонки
+	raceStruct - объект гонки
+*/
+func (m *MRace) GetRaceCheckpointsArr(raceUID string, raceStruct *Race) (err error) {
+	err = m.openDB()
+	defer m.closeDB()
+	if err != nil {
+		revel.ERROR.Println(err)
+		return err
+	}
+	for n, value := range raceStruct.ClassesArr {
 		classUID := value.UID
-
-		data = ""
-		query = `SELECT "checkpoint_ID", "race_UID", "class_UID", "number", gps, m_number
+		query := `SELECT "checkpoint_ID", "race_UID", "class_UID", "number", gps, m_number
 					FROM "Checkpoints"
 					WHERE ("race_UID" = '` + raceUID + `' AND "class_UID" = '` + classUID + `')
 					ORDER BY m_number`
-		rows, err = m.DB.Query("SELECT array_to_json(ARRAY_AGG(row_to_json(row))) FROM (" + query + ") row")
+		rows, err := m.DB.Query("SELECT array_to_json(ARRAY_AGG(row_to_json(row))) FROM (" + query + ") row")
 		defer rows.Close()
 		if err != nil {
 			revel.ERROR.Println(err)
+			return err
 		}
-
+		var data string
+		var row sql.NullString
 		for rows.Next() {
 			err = rows.Scan(&row)
 			if err != nil {
 				revel.ERROR.Println(err)
-				break
+				return err
 			}
 		}
 		data = row.String
-		revel.WARN.Println("data", data)
-		json.Unmarshal([]byte(data), &m.Race.ClassesArr[n].CheckpointsArr_todo)
-		for _, value := range m.Race.ClassesArr[n].CheckpointsArr_todo {
+		json.Unmarshal([]byte(data), &raceStruct.ClassesArr[n].CheckpointsArr_todo)
+
+		// todo бред, надо остовлять только массив
+		for _, value := range raceStruct.ClassesArr[n].CheckpointsArr_todo {
 			chekpointNum := value.Number
-			m.Race.ClassesArr[n].Checkpoints = m.Race.ClassesArr[n].Checkpoints + strconv.Itoa(chekpointNum) + ","
+			raceStruct.ClassesArr[n].Checkpoints = raceStruct.ClassesArr[n].Checkpoints + strconv.Itoa(chekpointNum) + ","
 		}
-		str := m.Race.ClassesArr[n].Checkpoints
+		str := raceStruct.ClassesArr[n].Checkpoints
 		if len(str) > 0 {
 			if strings.HasSuffix(str, ",") {
 				str = str[:len(str)-len(",")]
-				m.Race.ClassesArr[n].Checkpoints = str
+				raceStruct.ClassesArr[n].Checkpoints = str
 			}
 		}
-	}
 
-	resByte, _ := json.Marshal(m.Race)
-	res = string(resByte[:])
-	return res
+	}
+	return err
+}
+
+/*
+GetRaceInfo - метод возвращает полные данные по гонке
+	raceUID - уникальный индификатор гонки
+*/
+func (m *MRace) GetRaceInfo(raceUID string) (result Race, err error) {
+	if raceUID == "" {
+		err := errors.New("raceUID пустой")
+		return result, err
+	}
+	raceStruct, err := m.GetRace(raceUID)
+	raceStruct.MarshalsArr, err = m.GetRaceMarshals(raceUID)
+	raceStruct.ClassesArr, err = m.GetRaceClasses(raceUID)
+	err = m.GetRaceCheckpointsArr(raceUID, &raceStruct)
+	if err != nil {
+		return result, err
+	}
+	result = raceStruct
+	return result, nil
 }
 
 /*
