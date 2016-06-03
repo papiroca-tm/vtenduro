@@ -1,28 +1,37 @@
 {{set . "title" "Home"}}
 {{template "header.html" .}}
 
-<p style="padding: 20px">
-    <button onclick="getRaces()">POST /api/getRaceList</button>
+<p style="padding: 5px">
+    <button onclick="getRaceList()">POST /api/getRaceList</button>
     data:{"dt":"2016-05-21","city":"саратов","name":"роло"}
 </p>
-<p style="padding: 20px">
+<p style="padding: 5px">
     <button onclick="getRaceInfo('edec71a9-f2cb-44c9-b142-d2d3747307b1')">POST /api/getRaceInfo</button>
+    data:{"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1"}
+</p>
+<p style="padding: 5px">
+    <button onclick="getClassList('edec71a9-f2cb-44c9-b142-d2d3747307b1')">POST /api/getClassList</button>
     data:{"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1"}
 </p>
 
 <script>
-    function getRaces() {
+    function getRaceList() {
         sendPost("/api/getRaceList", {
             "dt": "2016-05-21",
             "city": "ара",
             "name": "рол"
         });
-    }
+    };
     function getRaceInfo(raceUID) {
         sendPost("/api/getRaceInfo", {
             "raceUID": raceUID,
         });
-    }
+    };
+    function getClassList(raceUID) {
+        sendPost("/api/getClassList", {
+            "raceUID": raceUID,
+        });
+    };
     
     function sendPost(url, data) {
         $.ajax({

@@ -109,10 +109,10 @@ func (m *MRace) GetRace(raceUID string) (result Race, err error) {
 }
 
 /*
-GetRaceMarshals - метод возвращает массив маршалов гонки
+GetRaceMarshalsArr - метод возвращает массив маршалов гонки
 	raceUID - уникальный индификатор гонки
 */
-func (m *MRace) GetRaceMarshals(raceUID string) (result []Marshal, err error) {
+func (m *MRace) GetRaceMarshalsArr(raceUID string) (result []Marshal, err error) {
 	err = m.openDB()
 	defer m.closeDB()
 	if err != nil {
@@ -143,10 +143,10 @@ func (m *MRace) GetRaceMarshals(raceUID string) (result []Marshal, err error) {
 }
 
 /*
-GetRaceClasses - метод возвращает массив классов гонки
+GetRaceClassesArr - метод возвращает массив классов гонки
 	raceUID - уникальный индификатор гонки
 */
-func (m *MRace) GetRaceClasses(raceUID string) (result []RaceClass, err error) {
+func (m *MRace) GetRaceClassesArr(raceUID string) (result []RaceClass, err error) {
 	err = m.openDB()
 	defer m.closeDB()
 	if err != nil {
@@ -241,8 +241,8 @@ func (m *MRace) GetRaceInfo(raceUID string) (result Race, err error) {
 		return result, err
 	}
 	raceStruct, err := m.GetRace(raceUID)
-	raceStruct.MarshalsArr, err = m.GetRaceMarshals(raceUID)
-	raceStruct.ClassesArr, err = m.GetRaceClasses(raceUID)
+	raceStruct.MarshalsArr, err = m.GetRaceMarshalsArr(raceUID)
+	raceStruct.ClassesArr, err = m.GetRaceClassesArr(raceUID)
 	err = m.GetRaceCheckpointsArr(raceUID, &raceStruct)
 	if err != nil {
 		return result, err
