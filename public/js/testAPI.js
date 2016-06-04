@@ -56,7 +56,7 @@ function sendPost(url, data, container) {
 		success: function (data, textStatus, jqXHR) {                
 			var obj = JSON.parse(data)               
 			console.dir(obj);
-			$("#" + container).html(data);         
+			$("#" + container).html(JSON.stringify(obj, null, 4));         
 		},
 		error: function (jqXHR, textStatus, errorThown) {
 			console.error(jqXHR);
