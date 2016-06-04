@@ -111,10 +111,7 @@ func (m *MRace) GetRace(raceUID string) (result Race, err error) {
 		revel.ERROR.Println(err)
 		return result, err
 	}
-
 	raceStruct := m.Race
-
-	revel.INFO.Println("openDB OK")
 	query := `SELECT "Race"."race_UID", "Race".date, "Race".name, "Race".start_type, "Race".gps, "Race".city As cityid, "RefCitys"."city_ID", "RefCitys".name AS city
 				FROM "Race", "RefCitys"
 				WHERE ("Race"."race_UID" = '` + raceUID + `' AND "Race".city = "RefCitys"."city_ID")`
@@ -370,6 +367,44 @@ func (m *MRace) GetCheckpointsArr(raceUID, classUID string) (result []Checkpoint
 				WHERE ("race_UID" = '` + raceUID + `' AND "class_UID" = '` + classUID + `')
 				ORDER BY m_number`
 	rows, err := m.DB.Query("SELECT array_to_json(ARRAY_AGG(row_to_json(row))) FROM (" + query + ") row")
+	defer rows.Close()
+	if err != nil {
+		revel.ERROR.Println(err)
+		return result, err
+	}
+	var data string
+	var row sql.NullString
+	for rows.Next() {
+		err = rows.Scan(&row)
+		if err != nil {
+			revel.ERROR.Println(err)
+			return result, err
+		}
+	}
+	data = row.String
+	json.Unmarshal([]byte(data), &result)
+	return result, err
+}
+
+/*
+GetCheckpointInfo - метод возвращает данные по контрольной точке класса гонки
+	raceUID - уникальный индификатор гонки
+	classUID - уникальный индификатор класса гонки
+	number - номер контрольной точки
+*/
+func (m *MRace) GetCheckpointInfo(raceUID, classUID string, number int) (result Checkpoint, err error) {
+	err = m.openDB()
+	defer m.closeDB()
+	if err != nil {
+		revel.ERROR.Println(err)
+		return result, err
+	}
+	query := `SELECT "checkpoint_ID", "race_UID", "class_UID", "number", gps, m_number
+				FROM "Checkpoints"
+				WHERE ("race_UID" = '` + raceUID + `' 
+						AND "class_UID" = '` + classUID + `'
+						AND m_number = ` + strconv.Itoa(number) + `)`
+	rows, err := m.DB.Query("SELECT row_to_json(row) FROM (" + query + ") row")
 	defer rows.Close()
 	if err != nil {
 		revel.ERROR.Println(err)

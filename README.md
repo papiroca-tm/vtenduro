@@ -1,10 +1,10 @@
 #REST API под проект эндуро гонок и не только
 ####version 0.0.3
 ##todo list
+- функция в контроллере structToJson -- (04.06.2016)
 - вынести листинги запросов к БД в отдельный пакет -- (03.06.2016)
 - убрать отдельное подключение к БД из каждого метода модели mRace -- (03.06.2016)
 - создание документа с описанием рест методов в директории docs -- (02.06.2016)
-- метод /api/getCheckpointInfo(raceUID,classUID,number) -- 31.05.16
 - разработка реляционной модели оставшихся таблиц -- 31.05.16
 - методы записи данных в БД по существующему функционалу get методов -- 31.05.16
 - методы изменения данных в БД по существующему функционалу get методов -- 31.05.16
@@ -17,19 +17,21 @@
 ##Функциональные возможности
 |наименование метода|параметры|описание|
 |---|---|---|
-|/api/getRaceList|(dt,city,name)|методот возвращает массив гонок с базовыми характеристиками|
-|/api/getRaceInfo|(raceUID)|метод возвращает полные данные по гонке|
-|/api/getClassList|(raceUID)|метод возвращает массив классов гонки|
-|/api/getClassInfo|(raceUID,classUID)|метод возвращает данные по классу гонки|
-|/api/getMarshalList|(raceUID)|метод возвращает массив маршалов гонки|
-|/api/getMarshalInfo|(raceUID,mNumber)|метод возвращает данные по маршалу гонки|
-|/api/getCheckpointList|(raceUID,classUID)|метод возвращает массив контрольных точек по классу гонки|
+|/api/getRaceList|(dt,city,name)|возвращает массив гонок с базовыми характеристиками|
+|/api/getRaceInfo|(raceUID)|возвращает полные данные по гонке|
+|/api/getClassList|(raceUID)|возвращает массив классов гонки|
+|/api/getClassInfo|(raceUID,classUID)|возвращает данные по классу гонки|
+|/api/getMarshalList|(raceUID)|возвращает массив маршалов гонки|
+|/api/getMarshalInfo|(raceUID,mNumber)|возвращает данные по маршалу гонки|
+|/api/getCheckpointList|(raceUID,classUID)|возвращает массив контрольных точек по классу гонки|
+|/api/getCheckpointInfo|(raceUID,mNumber,number)|возвращает данные по контрольной точке класса гонки|
 
 
 ##work done:
 ####04.06.2016
 - метод /api/getClassInfo(raceUID,classUID) -- 31.05.16
 - метод /api/getCheckpointList(raceUID) -- 31.05.16
+- метод /api/getCheckpointInfo(raceUID,classUID,number) -- 31.05.16
 
 
 ####03.06.2016

@@ -29,11 +29,10 @@
     <button onclick="getCheckpointList('edec71a9-f2cb-44c9-b142-d2d3747307b1', 'ba37e1bc-9df6-4db8-884e-c68d127cec21')">POST /api/getCheckpointList</button>
     data:{"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1","classUID":"ba37e1bc-9df6-4db8-884e-c68d127cec21"}
 </div>
-<!--
 <div style="padding: 1px">
-    <button onclick="getMarshalInfo('edec71a9-f2cb-44c9-b142-d2d3747307b1', 2)">POST /api/getMarshalInfo</button>
-    data:{"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1, "mNumber":2"}
-</div>-->
+    <button onclick="getCheckpointInfo('edec71a9-f2cb-44c9-b142-d2d3747307b1', 'ba37e1bc-9df6-4db8-884e-c68d127cec21', 2)">POST /api/getCheckpointInfo</button>
+    data:{"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1","classUID":"ba37e1bc-9df6-4db8-884e-c68d127cec21","number":2"}
+</div>
 
 <script>
     function getRaceList() {
@@ -76,12 +75,13 @@
             "classUID": classUID,
         });
     };
-    // function getClassInfo(raceUID, classUID) {
-    //     sendPost("/api/getClassInfo", {
-    //         "raceUID": raceUID,
-    //         "classUID": classUID,
-    //     });
-    // };
+    function getCheckpointInfo(raceUID, classUID, num) {
+        sendPost("/api/getCheckpointInfo", {
+            "raceUID": raceUID,
+            "classUID": classUID,
+            "number": num,
+        });
+    };
     
     
     
@@ -94,33 +94,7 @@
             url: url,
             data: data,
             success: function (data, textStatus, jqXHR) {                
-                var obj = JSON.parse(data)
-                switch (url) {
-                    case "/api/getRaceList":
-                        console.log("getRaceList");
-                        break;
-                    case "/api/getRaceInfo":
-                        console.log("getRaceInfo");
-                        break;
-                    case "/api/getClassList":
-                        console.log("getClassList");
-                        break;
-                    case "/api/getMarshalList":
-                        console.log("getMarshalList");
-                        break;
-                    case "/api/getMarshalInfo":
-                        console.log("getMarshalInfo");
-                        break;
-                    case "/api/getClassInfo":
-                        console.log("getClassInfo");
-                        break;
-                    case "/api/getCheckpointList":
-                        console.log("getCheckpointList");
-                        break;
-                    // case "/api/getMarshalInfo":
-                    //     console.log("getMarshalInfo");
-                    //     break;
-                }                
+                var obj = JSON.parse(data)               
                 console.dir(obj);            
             },
             error: function (jqXHR, textStatus, errorThown) {

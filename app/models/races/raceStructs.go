@@ -14,9 +14,9 @@ type Marshal struct {
 Checkpoint - структура контрольной точки
 */
 type Checkpoint struct {
-	ID     int `json:"checkpoint_ID"`
-	Number int `json:"number"`
-	Gps    int `json:"gps"`
+	ID     int    `json:"checkpoint_ID"`
+	Number int    `json:"number"`
+	Gps    string `json:"gps"`
 }
 
 /*
