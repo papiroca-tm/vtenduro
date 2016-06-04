@@ -11,14 +11,22 @@ type Api struct {
 	modelRace *mRace.MRace
 }
 
+func structToJson(structure interface{}) (response string, err error) {
+	resultByte, _ := json.Marshal(structure)
+	response = string(resultByte[:])
+	return response, nil
+}
+
 func (c Api) GetRaceList(dt, city, name string) revel.Result {
 	c.modelRace = new(mRace.MRace)
 	result, err := c.modelRace.GetRaceList(dt, city, name)
 	if err != nil {
 		// todo
 	}
-	resultByte, _ := json.Marshal(result)
-	response := string(resultByte[:])
+	response, err := structToJson(result)
+	if err != nil {
+		// todo
+	}
 	return c.RenderJson(response)
 }
 
@@ -28,8 +36,10 @@ func (c Api) GetRaceInfo(raceUID string) revel.Result {
 	if err != nil {
 		// todo
 	}
-	resultByte, _ := json.Marshal(result)
-	response := string(resultByte[:])
+	response, err := structToJson(result)
+	if err != nil {
+		// todo
+	}
 	return c.RenderJson(response)
 }
 
@@ -39,8 +49,10 @@ func (c Api) GetClassList(raceUID string) revel.Result {
 	if err != nil {
 		// todo
 	}
-	resultByte, _ := json.Marshal(result)
-	response := string(resultByte[:])
+	response, err := structToJson(result)
+	if err != nil {
+		// todo
+	}
 	return c.RenderJson(response)
 }
 
@@ -50,8 +62,10 @@ func (c Api) GetMarshalList(raceUID string) revel.Result {
 	if err != nil {
 		// todo
 	}
-	resultByte, _ := json.Marshal(result)
-	response := string(resultByte[:])
+	response, err := structToJson(result)
+	if err != nil {
+		// todo
+	}
 	return c.RenderJson(response)
 }
 
@@ -61,8 +75,10 @@ func (c Api) GetMarshalInfo(raceUID string, mNumber int) revel.Result {
 	if err != nil {
 		// todo
 	}
-	resultByte, _ := json.Marshal(result)
-	response := string(resultByte[:])
+	response, err := structToJson(result)
+	if err != nil {
+		// todo
+	}
 	return c.RenderJson(response)
 }
 
@@ -72,8 +88,10 @@ func (c Api) GetClassInfo(raceUID string, classUID string) revel.Result {
 	if err != nil {
 		// todo
 	}
-	resultByte, _ := json.Marshal(result)
-	response := string(resultByte[:])
+	response, err := structToJson(result)
+	if err != nil {
+		// todo
+	}
 	return c.RenderJson(response)
 }
 
@@ -83,8 +101,10 @@ func (c Api) GetCheckpointList(raceUID string, classUID string) revel.Result {
 	if err != nil {
 		// todo
 	}
-	resultByte, _ := json.Marshal(result)
-	response := string(resultByte[:])
+	response, err := structToJson(result)
+	if err != nil {
+		// todo
+	}
 	return c.RenderJson(response)
 }
 
@@ -94,7 +114,9 @@ func (c Api) GetCheckpointInfo(raceUID string, classUID string, number int) reve
 	if err != nil {
 		// todo
 	}
-	resultByte, _ := json.Marshal(result)
-	response := string(resultByte[:])
+	response, err := structToJson(result)
+	if err != nil {
+		// todo
+	}
 	return c.RenderJson(response)
 }
