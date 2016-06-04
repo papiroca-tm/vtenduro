@@ -19,16 +19,17 @@
 </div>
 <div style="padding: 1px">
     <button onclick="getMarshalInfo('edec71a9-f2cb-44c9-b142-d2d3747307b1', 2)">POST /api/getMarshalInfo</button>
-    data:{"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1", "mNumber":2"}
+    data:{"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1","mNumber":2"}
 </div>
 <div style="padding: 1px">
     <button onclick="getClassInfo('edec71a9-f2cb-44c9-b142-d2d3747307b1', 'ba37e1bc-9df6-4db8-884e-c68d127cec21')">POST /api/getClassInfo</button>
-    data:{"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1", "classUID":"ba37e1bc-9df6-4db8-884e-c68d127cec21"}
+    data:{"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1","classUID":"ba37e1bc-9df6-4db8-884e-c68d127cec21"}
 </div>
-<!--<div style="padding: 1px">
-    <button onclick="getMarshalInfo('edec71a9-f2cb-44c9-b142-d2d3747307b1', 2)">POST /api/getMarshalInfo</button>
-    data:{"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1, "mNumber":2"}
+<div style="padding: 1px">
+    <button onclick="getCheckpointList('edec71a9-f2cb-44c9-b142-d2d3747307b1', 'ba37e1bc-9df6-4db8-884e-c68d127cec21')">POST /api/getCheckpointList</button>
+    data:{"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1","classUID":"ba37e1bc-9df6-4db8-884e-c68d127cec21"}
 </div>
+<!--
 <div style="padding: 1px">
     <button onclick="getMarshalInfo('edec71a9-f2cb-44c9-b142-d2d3747307b1', 2)">POST /api/getMarshalInfo</button>
     data:{"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1, "mNumber":2"}
@@ -69,12 +70,12 @@
             "classUID": classUID,
         });
     };
-    // function getClassInfo(raceUID, classUID) {
-    //     sendPost("/api/getClassInfo", {
-    //         "raceUID": raceUID,
-    //         "classUID": classUID,
-    //     });
-    // };
+    function getCheckpointList(raceUID, classUID) {
+        sendPost("/api/getCheckpointList", {
+            "raceUID": raceUID,
+            "classUID": classUID,
+        });
+    };
     // function getClassInfo(raceUID, classUID) {
     //     sendPost("/api/getClassInfo", {
     //         "raceUID": raceUID,
@@ -113,9 +114,9 @@
                     case "/api/getClassInfo":
                         console.log("getClassInfo");
                         break;
-                    // case "/api/getMarshalInfo":
-                    //     console.log("getMarshalInfo");
-                    //     break;
+                    case "/api/getCheckpointList":
+                        console.log("getCheckpointList");
+                        break;
                     // case "/api/getMarshalInfo":
                     //     console.log("getMarshalInfo");
                     //     break;

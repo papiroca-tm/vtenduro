@@ -22,3 +22,4 @@ POST /api/getClassList									Api.GetClassList
 POST /api/getMarshalList								Api.GetMarshalList
 POST /api/getMarshalInfo								Api.GetMarshalInfo
 POST /api/getClassInfo									Api.GetClassInfo
+POST /api/getCheckpointList								Api.GetCheckpointList

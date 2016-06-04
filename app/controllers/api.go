@@ -76,3 +76,14 @@ func (c Api) GetClassInfo(raceUID string, classUID string) revel.Result {
 	response := string(resultByte[:])
 	return c.RenderJson(response)
 }
+
+func (c Api) GetCheckpointList(raceUID string, classUID string) revel.Result {
+	c.modelRace = new(mRace.MRace)
+	result, err := c.modelRace.GetCheckpointsArr(raceUID, classUID)
+	if err != nil {
+		// todo
+	}
+	resultByte, _ := json.Marshal(result)
+	response := string(resultByte[:])
+	return c.RenderJson(response)
+}
