@@ -23,6 +23,38 @@ type MRace struct {
 }
 
 /*
+openDB - методт подключения к БД
+*/
+func (m *MRace) openDB() (err error) {
+	driver := "postgres"
+	connectString := "postgres" + "://"
+	connectString += "postgres" + ":"
+	connectString += "vtenduro" + "@"
+	connectString += "localhost" + ":"
+	connectString += "5432" + "/"
+	connectString += "postgres"
+	connectString += "?sslmode=" + "disable"
+	m.DB, err = sql.Open(driver, connectString)
+	if err != nil {
+		revel.ERROR.Println("DB open Error", err)
+		return err
+	}
+	return nil
+}
+
+/*
+closeDB - методт отключения от БД
+*/
+func (m *MRace) closeDB() (err error) {
+	err = m.DB.Close()
+	if err != nil {
+		revel.ERROR.Println("DB close Error", err)
+		return err
+	}
+	return nil
+}
+
+/*
 GetRaceList - методот возвращает массив гонок с базовыми характеристиками
 	dt - дата в формате 2006-01-02
 	city - имя города, ищет по принципу LIKE %city% (опционально)
@@ -178,6 +210,41 @@ func (m *MRace) GetRaceMarshalInfo(raceUID string, mNumber int) (result Marshal,
 }
 
 /*
+GetRaceClassInfo - метод возвращает данные по классу гонки
+	raceUID - уникальный индификатор гонки
+	classUID - уникальный индификатор класса гонки
+*/
+func (m *MRace) GetRaceClassInfo(raceUID, classUID string) (result RaceClass, err error) {
+	err = m.openDB()
+	defer m.closeDB()
+	if err != nil {
+		revel.ERROR.Println(err)
+		return result, err
+	}
+	query := `SELECT "class_UID", "race_UID", name, laps, date_start, date_finish
+				FROM "RaceClasses"
+				WHERE ("race_UID" = '` + raceUID + `' AND "class_UID" ='` + classUID + `')`
+	rows, err := m.DB.Query("SELECT row_to_json(row) FROM (" + query + ") row")
+	defer rows.Close()
+	if err != nil {
+		revel.ERROR.Println(err)
+		return result, err
+	}
+	var data string
+	var row sql.NullString
+	for rows.Next() {
+		err = rows.Scan(&row)
+		if err != nil {
+			revel.ERROR.Println(err)
+			return result, err
+		}
+	}
+	data = row.String
+	json.Unmarshal([]byte(data), &result)
+	return result, err
+}
+
+/*
 GetRaceClassesArr - метод возвращает массив классов гонки
 	raceUID - уникальный индификатор гонки
 */
@@ -284,36 +351,4 @@ func (m *MRace) GetRaceInfo(raceUID string) (result Race, err error) {
 	}
 	result = raceStruct
 	return result, nil
-}
-
-/*
-openDB - методт подключения к БД
-*/
-func (m *MRace) openDB() (err error) {
-	driver := "postgres"
-	connectString := "postgres" + "://"
-	connectString += "postgres" + ":"
-	connectString += "vtenduro" + "@"
-	connectString += "localhost" + ":"
-	connectString += "5432" + "/"
-	connectString += "postgres"
-	connectString += "?sslmode=" + "disable"
-	m.DB, err = sql.Open(driver, connectString)
-	if err != nil {
-		revel.ERROR.Println("DB open Error", err)
-		return err
-	}
-	return nil
-}
-
-/*
-closeDB - методт отключения от БД
-*/
-func (m *MRace) closeDB() (err error) {
-	err = m.DB.Close()
-	if err != nil {
-		revel.ERROR.Println("DB close Error", err)
-		return err
-	}
-	return nil
 }

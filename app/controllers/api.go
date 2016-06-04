@@ -65,3 +65,14 @@ func (c Api) GetMarshalInfo(raceUID string, mNumber int) revel.Result {
 	response := string(resultByte[:])
 	return c.RenderJson(response)
 }
+
+func (c Api) GetClassInfo(raceUID string, classUID string) revel.Result {
+	c.modelRace = new(mRace.MRace)
+	result, err := c.modelRace.GetRaceClassInfo(raceUID, classUID)
+	if err != nil {
+		// todo
+	}
+	resultByte, _ := json.Marshal(result)
+	response := string(resultByte[:])
+	return c.RenderJson(response)
+}

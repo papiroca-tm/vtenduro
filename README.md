@@ -4,7 +4,6 @@
 - вынести листинги запросов к БД в отдельный пакет -- (03.06.2016)
 - убрать отдельное подключение к БД из каждого метода модели mRace -- (03.06.2016)
 - создание документа с описанием рест методов в директории docs -- (02.06.2016)
-- метод /api/getClassInfo(raceUID,classUID) -- 31.05.16
 - метод /api/getCheckpointList(raceUID) -- 31.05.16
 - метод /api/getCheckpointInfo(raceUID,classUID,number) -- 31.05.16
 - разработка реляционной модели оставшихся таблиц -- 31.05.16
@@ -22,11 +21,16 @@
 |/api/getRaceList|(dt,city,name)|методот возвращает массив гонок с базовыми характеристиками|
 |/api/getRaceInfo|(raceUID)|метод возвращает полные данные по гонке|
 |/api/getClassList|(raceUID)|метод возвращает массив классов гонки|
+|/api/getClassInfo|(raceUID,classUID)|метод возвращает данные по классу гонки|
 |/api/getMarshalList|(raceUID)|метод возвращает массив маршалов гонки|
 |/api/getMarshalInfo|(raceUID,mNumber)|метод возвращает данные по маршалу гонки|
 
 
 ##work done:
+####04.06.2016
+- метод /api/getClassInfo(raceUID,classUID) -- 31.05.16
+
+
 ####03.06.2016
 - рефакторинг модели mRace (разделить getRaceInfo на функции) -- (02.06.2016)
 - метод /api/getClassList(raceUID) -- 31.05.16

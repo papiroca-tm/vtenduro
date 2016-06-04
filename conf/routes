@@ -15,8 +15,10 @@ GET     /public/*filepath                       Static.Serve("public")
 # Catch all
 *       /:controller/:action                    :controller.:action
 
+# API
 POST /api/getRaceList									Api.GetRaceList
 POST /api/getRaceInfo									Api.GetRaceInfo
 POST /api/getClassList									Api.GetClassList
 POST /api/getMarshalList								Api.GetMarshalList
 POST /api/getMarshalInfo								Api.GetMarshalInfo
+POST /api/getClassInfo									Api.GetClassInfo

@@ -19,8 +19,20 @@
 </div>
 <div style="padding: 1px">
     <button onclick="getMarshalInfo('edec71a9-f2cb-44c9-b142-d2d3747307b1', 2)">POST /api/getMarshalInfo</button>
+    data:{"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1", "mNumber":2"}
+</div>
+<div style="padding: 1px">
+    <button onclick="getClassInfo('edec71a9-f2cb-44c9-b142-d2d3747307b1', 'ba37e1bc-9df6-4db8-884e-c68d127cec21')">POST /api/getClassInfo</button>
+    data:{"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1", "classUID":"ba37e1bc-9df6-4db8-884e-c68d127cec21"}
+</div>
+<!--<div style="padding: 1px">
+    <button onclick="getMarshalInfo('edec71a9-f2cb-44c9-b142-d2d3747307b1', 2)">POST /api/getMarshalInfo</button>
     data:{"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1, "mNumber":2"}
 </div>
+<div style="padding: 1px">
+    <button onclick="getMarshalInfo('edec71a9-f2cb-44c9-b142-d2d3747307b1', 2)">POST /api/getMarshalInfo</button>
+    data:{"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1, "mNumber":2"}
+</div>-->
 
 <script>
     function getRaceList() {
@@ -51,6 +63,24 @@
             "mNumber": mNumber,
         });
     };
+    function getClassInfo(raceUID, classUID) {
+        sendPost("/api/getClassInfo", {
+            "raceUID": raceUID,
+            "classUID": classUID,
+        });
+    };
+    // function getClassInfo(raceUID, classUID) {
+    //     sendPost("/api/getClassInfo", {
+    //         "raceUID": raceUID,
+    //         "classUID": classUID,
+    //     });
+    // };
+    // function getClassInfo(raceUID, classUID) {
+    //     sendPost("/api/getClassInfo", {
+    //         "raceUID": raceUID,
+    //         "classUID": classUID,
+    //     });
+    // };
     
     
     
@@ -80,6 +110,15 @@
                     case "/api/getMarshalInfo":
                         console.log("getMarshalInfo");
                         break;
+                    case "/api/getClassInfo":
+                        console.log("getClassInfo");
+                        break;
+                    // case "/api/getMarshalInfo":
+                    //     console.log("getMarshalInfo");
+                    //     break;
+                    // case "/api/getMarshalInfo":
+                    //     console.log("getMarshalInfo");
+                    //     break;
                 }                
                 console.dir(obj);            
             },
