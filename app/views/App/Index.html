@@ -1,107 +1,118 @@
-{{set . "title" "Home"}}
+{{set . "title" "vtEnduro"}}
+{{append . "moreScripts" "/js/testAPI.js"}}
 {{template "header.html" .}}
 
-<div style="padding: 1px">
-    <button onclick="getRaceList()">POST /api/getRaceList</button>
-    data:{"dt":"2016-05-21","city":"саратов","name":"роло"}
-</div>
-<div style="padding: 1px">
-    <button onclick="getRaceInfo('edec71a9-f2cb-44c9-b142-d2d3747307b1')">POST /api/getRaceInfo</button>
-    data:{"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1"}
-</div>
-<div style="padding: 1px">
-    <button onclick="getClassList('edec71a9-f2cb-44c9-b142-d2d3747307b1')">POST /api/getClassList</button>
-    data:{"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1"}
-</div>
-<div style="padding: 1px">
-    <button onclick="getMarshalList('edec71a9-f2cb-44c9-b142-d2d3747307b1')">POST /api/getMarshalList</button>
-    data:{"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1"}
-</div>
-<div style="padding: 1px">
-    <button onclick="getMarshalInfo('edec71a9-f2cb-44c9-b142-d2d3747307b1', 2)">POST /api/getMarshalInfo</button>
-    data:{"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1","mNumber":2"}
-</div>
-<div style="padding: 1px">
-    <button onclick="getClassInfo('edec71a9-f2cb-44c9-b142-d2d3747307b1', 'ba37e1bc-9df6-4db8-884e-c68d127cec21')">POST /api/getClassInfo</button>
-    data:{"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1","classUID":"ba37e1bc-9df6-4db8-884e-c68d127cec21"}
-</div>
-<div style="padding: 1px">
-    <button onclick="getCheckpointList('edec71a9-f2cb-44c9-b142-d2d3747307b1', 'ba37e1bc-9df6-4db8-884e-c68d127cec21')">POST /api/getCheckpointList</button>
-    data:{"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1","classUID":"ba37e1bc-9df6-4db8-884e-c68d127cec21"}
-</div>
-<div style="padding: 1px">
-    <button onclick="getCheckpointInfo('edec71a9-f2cb-44c9-b142-d2d3747307b1', 'ba37e1bc-9df6-4db8-884e-c68d127cec21', 2)">POST /api/getCheckpointInfo</button>
-    data:{"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1","classUID":"ba37e1bc-9df6-4db8-884e-c68d127cec21","number":2"}
-</div>
+<style>
+    th { text-align: center }
+    td {font-size:90%}
+    .td1 { width: 15%; font-weight: bold}
+    .td2 { width: 20%;}
+    .td3 { width: 30%;}
+    .td4 { width: 5%; text-align: center }
+    .td5 { width: 30%;}
+</style>
 
-<script>
-    function getRaceList() {
-        sendPost("/api/getRaceList", {
-            "dt": "2016-05-21",
-            "city": "ара",
-            "name": "рол"
-        });
-    };
-    function getRaceInfo(raceUID) {
-        sendPost("/api/getRaceInfo", {
-            "raceUID": raceUID,
-        });
-    };
-    function getClassList(raceUID) {
-        sendPost("/api/getClassList", {
-            "raceUID": raceUID,
-        });
-    };
-    function getMarshalList(raceUID) {
-        sendPost("/api/getMarshalList", {
-            "raceUID": raceUID,
-        });
-    };
-    function getMarshalInfo(raceUID, mNumber) {
-        sendPost("/api/getMarshalInfo", {
-            "raceUID": raceUID,
-            "mNumber": mNumber,
-        });
-    };
-    function getClassInfo(raceUID, classUID) {
-        sendPost("/api/getClassInfo", {
-            "raceUID": raceUID,
-            "classUID": classUID,
-        });
-    };
-    function getCheckpointList(raceUID, classUID) {
-        sendPost("/api/getCheckpointList", {
-            "raceUID": raceUID,
-            "classUID": classUID,
-        });
-    };
-    function getCheckpointInfo(raceUID, classUID, num) {
-        sendPost("/api/getCheckpointInfo", {
-            "raceUID": raceUID,
-            "classUID": classUID,
-            "number": num,
-        });
-    };
-    
-    
-    
-    
-    function sendPost(url, data) {
-        $.ajax({
-            type: 'POST',
-            host: '/',
-            port: '9000',
-            url: url,
-            data: data,
-            success: function (data, textStatus, jqXHR) {                
-                var obj = JSON.parse(data)               
-                console.dir(obj);            
-            },
-            error: function (jqXHR, textStatus, errorThown) {
-                console.error(jqXHR);
-            }
-        });
-    }    
-</script>
+<h1 style="margin-left:20px">REST API под проект эндуро гонок v.0.0.3</h1>
+<h3 style="margin-left:20px">Функциональные тесты</h3>
+
+<table class="table table-bordered">
+    <thead class="thead-inverse">      
+        <tr>
+            <th>метод</th>
+            <th>параметры</th>
+            <th>описание</th>
+            <th>Тест</th>
+            <th>Ответ</th>
+        </tr>
+    </thead>
+    <tbody>
+        
+        <tr>
+            <td class="td1">getRaceList(dt,city,name)</td>
+            <td class="td2">
+                <div>"dt":"2016-05-21"</div>
+                <div>"city":"ара"</div>
+                <div>"name":"рол"</div>
+            </td>
+            <td class="td3">возвращает массив гонок с базовыми характеристиками</td>
+            <td class="td4"><button class="btn btn-default" onclick="getRaceList()">go</button></td>
+            <td class="td5"><div  id="getRaceList"></div></td>
+        </tr>        
+        <tr>
+            <td class="td1">getRaceInfo(raceUID)</td>
+            <td class="td2">
+                <div>"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1"</div>
+            </td>
+            <td class="td3">возвращает полные данные по гонке</td>
+            <td class="td4"><button class="btn btn-default" onclick="getRaceInfo('edec71a9-f2cb-44c9-b142-d2d3747307b1')">go</button></td>
+            <td class="td5"><div  id="getRaceInfo"></div></td>
+        </tr>
+        
+        <tr>
+            <td class="td1">getClassList(raceUID)</td>
+            <td class="td2">
+                <div>"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1"</div>
+            </td>
+            <td class="td3">возвращает массив классов гонки</td>
+            <td class="td4"><button class="btn btn-default" onclick="getClassList('edec71a9-f2cb-44c9-b142-d2d3747307b1')">go</button></td>
+            <td class="td5"><div  id="getClassList"></div></td>
+        </tr>        
+        <tr>
+            <td class="td1">getClassInfo(raceUID,classUID)</td>
+            <td class="td2">
+                <div>"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1"</div>
+                <div>"classUID":"ba37e1bc-9df6-4db8-884e-c68d127cec21"</div>
+            </td>
+            <td class="td3">возвращает данные по классу гонки</td>
+            <td class="td4"><button class="btn btn-default" onclick="getClassInfo('edec71a9-f2cb-44c9-b142-d2d3747307b1', 'ba37e1bc-9df6-4db8-884e-c68d127cec21')">go</button></td>
+            <td class="td5"><div  id="getClassInfo"></div></td>
+        </tr>
+        
+        <tr>
+            <td class="td1">getMarshalList(raceUID)</td>
+            <td class="td2">
+                <div>"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1"</div>
+            </td>
+            <td class="td3">возвращает массив маршалов гонки</td>
+            <td class="td4"><button class="btn btn-default" onclick="getMarshalList('edec71a9-f2cb-44c9-b142-d2d3747307b1')">go</button></td>
+            <td class="td5"><div  id="getMarshalList"></div></td>
+        </tr>        
+        <tr>
+            <td class="td1">getMarshalInfo(raceUID,mNumber)</td>
+            <td class="td2">
+                <div>"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1"</div>
+                <div>"mNumber":2</div>
+            </td>
+            <td class="td3">возвращает данные по маршалу гонки</td>
+            <td class="td4"><button class="btn btn-default" onclick="getMarshalInfo('edec71a9-f2cb-44c9-b142-d2d3747307b1', 2)">go</button></td>
+            <td class="td5"><div  id="getMarshalInfo"></div></td>
+        </tr>
+        
+        <tr>
+            <td class="td1">getCheckpointList(raceUID,classUID)</td>
+            <td class="td2">
+                <div>"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1"</div>
+                <div>"classUID":"ba37e1bc-9df6-4db8-884e-c68d127cec21"</div>
+            </td>
+            <td class="td3">возвращает массив контрольных точек по классу гонки</td>
+            <td class="td4"><button class="btn btn-default" onclick="getCheckpointList('edec71a9-f2cb-44c9-b142-d2d3747307b1', 'ba37e1bc-9df6-4db8-884e-c68d127cec21')">go</button></td>
+            <td class="td5"><div  id="getCheckpointList"></div></td>
+        </tr>
+        <tr>
+            <td class="td1">getCheckpointInfo(raceUID,classUID,number)</td>
+            <td class="td2">
+                <div>"raceUID":"edec71a9-f2cb-44c9-b142-d2d3747307b1"</div>
+                <div>"classUID":"ba37e1bc-9df6-4db8-884e-c68d127cec21"</div>
+                <div>"number":2"</div>
+            </td>
+            <td class="td3">возвращает данные по контрольной точке класса гонки</td>
+            <td class="td4"><button class="btn btn-default" onclick="getCheckpointInfo('edec71a9-f2cb-44c9-b142-d2d3747307b1', 'ba37e1bc-9df6-4db8-884e-c68d127cec21', 2)">go</button></td>
+            <td class="td5"><div  id="getCheckpointInfo"></div></td>
+        </tr>
+     </tbody>
+</table>
+
+
+
 
 {{template "footer.html" .}}
