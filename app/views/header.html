@@ -17,5 +17,10 @@
     {{range .moreScripts}}
       <script src="/public/{{.}}" type="text/javascript" charset="utf-8"></script>
     {{end}}
+    <script>
+        $(document).ready(function() {
+            onDocumentReady();      
+        });
+    </script>
   </head>
   <body>
