@@ -85,6 +85,9 @@ var testMethodArr = [
 	},
 ];
 
+function toggleResultView(id){
+	$(id).toggle();
+};
 
 function renderTestTable() {
 	console.log("renderTestTable");
@@ -105,8 +108,13 @@ function renderTestTable() {
 				<td class="td1">` + obj.method + `</td>
 				<td class="td2">` + params + `</td>
 				<td class="td3">` + obj.description + `</td>
-				<td class="td4"><button class="btn btn-default" onclick="` + obj.func + `">go</button></td>
-				<td class="td5"><div  id="` + obj.resultID + `"></div></td>
+				<td class="td4">
+					<button style="width:94px" class="btn btn-default" onclick="` + obj.func + `">go</button>
+					<button style="width:94px" class="btn btn-default" onclick="toggleResultView('#` + obj.resultID + `')">результат</button>
+				</td>
+				<td class="td5">					
+					<div id="` + obj.resultID + `" style="display: none;"></div>
+				</td>
 			</tr>  
 		`;
 		$("#table").append(testMethodRow);
