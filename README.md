@@ -1,6 +1,17 @@
 #REST API под проект эндуро гонок и не только
 ####version 0.0.4
 ##todo list
+- реализовать метод /api/getMarksForMarshal(raceUID,classUID,marshalNumber) -- 06.06.2016
+- реализовать метод /api/getMarksForCompetitor(raceUID,classUID,competitorUID) -- 06.06.2016
+- реализовать метод /api/getMarksForClass(raceUID,classUID) -- 06.06.2016
+- реализовать метод /api/getMarks(raceUID) -- 06.06.2016
+- реализовать метод /api/getCompetitorsForClass(raceUID,classUID) -- 06.06.2016
+- реализовать метод /api/getCompetitorsForRace(raceUID) -- 06.06.2016
+- реализовать метод /api/getCompetitors(raceUID) -- 06.06.2016
+- реализовать метод /api/getRegistrationClass(raceUID,classUID) -- 06.06.2016
+- реализовать метод /api/getRegistration(raceUID) -- 06.06.2016
+- наполнить все таблицы тестовыми данными -- 06.06.2016
+- пересоздать все таблицы в БД по новой схеме реляционной модели -- 06.06.2016
 - реализовать в ответе от сервера понятие статуса и в зависимости от него определять успешность тестирования методов -- 04.06.2016
 - обработка ошибок в контроллере api -- 04.06.2016
 - вынести листинги запросов к БД в отдельный пакет -- 03.06.2016
